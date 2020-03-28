@@ -20,7 +20,7 @@ script:
   # - yarn linter
   # - yarn test:ci
   # build docker images
-  - yarn build:docker
+  # - yarn build:docker
   - docker tag reymar/blog-api:latest registry.heroku.com/$HEROKU_APP/web
 
 deploy:
