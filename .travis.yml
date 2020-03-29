@@ -8,6 +8,7 @@ node_js:
   - "12"
 services:
   - docker
+  - postgresql
 
 stages:
 - name: dependencies
@@ -22,17 +23,22 @@ stages:
 jobs:
   include:
     - stage: dependencies
+      name: "dependencies"
       script:
         - yarn install
+
     - stage: test
-      services:
-        postgresql
+      name: "test unit"
+      script:
+        - yarn test
+
+    - stage: test
+      name: "test e2e"
       before_script:
         - psql -c 'CREATE DATABASE postgres;' -U postgres
       script:
-        - yarn test
-    - script:
         - yarn test:e2e
+
     - stage: build and deploy
       before_script:
         # install heroku CLI
