@@ -6,9 +6,6 @@ cache:
     - ~/.npm
 node_js:
   - "12"
-services:
-  - docker
-  - postgresql
 
 stages:
 - name: dependencies
@@ -33,13 +30,15 @@ jobs:
         - yarn test
 
     - stage: test
+      services:
+        - postgresql
       name: "test e2e"
-      # before_script:
-      #   - psql -c 'CREATE DATABASE postgres;' -U postgres
       script:
         - yarn test:e2e
 
     - stage: build and deploy
+      services:
+        - docker
       before_script:
         # install heroku CLI
         - wget -qO- https://toolbelt.heroku.com/install.sh | sh
