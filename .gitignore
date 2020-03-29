@@ -1,6 +1,10 @@
 # compiled output
 /dist
 /node_modules
+/pgdata
+
+# environment
+.env
 
 # Logs
 logs
