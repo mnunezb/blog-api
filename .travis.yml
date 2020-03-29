@@ -12,7 +12,7 @@ stages:
 - name: test
 - name: build
 - name: build and deploy
-  if: (branch = master)
+  if: (branch = master) AND (type != pull_request)
 
 jobs:
   include:
