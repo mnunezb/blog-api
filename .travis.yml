@@ -37,6 +37,7 @@ jobs:
         - yarn test:e2e
 
     - stage: build and deploy
+      name: deploy
       services:
         - docker
       before_script:
