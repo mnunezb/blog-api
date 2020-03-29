@@ -34,8 +34,8 @@ jobs:
 
     - stage: test
       name: "test e2e"
-      before_script:
-        - psql -c 'CREATE DATABASE postgres;' -U postgres
+      # before_script:
+      #   - psql -c 'CREATE DATABASE postgres;' -U postgres
       script:
         - yarn test:e2e
 
