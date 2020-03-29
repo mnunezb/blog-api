@@ -20,7 +20,7 @@ install:
   # install deps
   - yarn install
 
-script:
+# script:
   # - yarn linter
   # - yarn test:ci
   # build docker images
