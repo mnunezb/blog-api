@@ -27,7 +27,7 @@ jobs:
     - stage: test
       script:
         - yarn test
-      script:
+    - script:
         - yarn test:e2e
     - stage: build and deploy
       before_script:
