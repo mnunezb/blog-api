@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm'
-
+import 'dotenv/config';
 @Injectable()
 export class DatabaseConnectionService implements TypeOrmOptionsFactory {
-    createTypeOrmOptions(connectionName?: string): TypeOrmModuleOptions {
+    createTypeOrmOptions(): TypeOrmModuleOptions {
         return {
             name: 'default',
             type: 'postgres',

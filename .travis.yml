@@ -25,6 +25,8 @@ jobs:
       script:
         - yarn install
     - stage: test
+      services:
+        postgresql
       script:
         - yarn test
     - script:
