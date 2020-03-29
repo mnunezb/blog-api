@@ -27,6 +27,8 @@ jobs:
     - stage: test
       services:
         postgresql
+      before_script:
+        - psql -c 'CREATE DATABASE postgres;' -U postgres
       script:
         - yarn test
     - script:
