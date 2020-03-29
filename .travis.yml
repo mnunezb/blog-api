@@ -9,24 +9,6 @@ node_js:
 services:
   - docker
 
-# before_install:
-#   # install heroku CLI
-#   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-#   # login to docker registries (dockerhub + heroku)
-#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#   - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
-
-# install:
-#   # install deps
-#   - yarn install
-
-# script:
-  # - yarn linter
-  # - yarn test:ci
-  # build docker images
-  # - yarn build:docker
-  # - docker tag $DOCKER_USERNAME/blog-api:latest registry.heroku.com/$HEROKU_APP/web
-
 stages:
 - name: dependencies
   if: (branch = master)
@@ -45,36 +27,17 @@ jobs:
     - stage: test
       script:
         - yarn test
-    - stage: build
-      before_script:
-        # login to docker registries (dockerhub)
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        # push to dockerhub
-        - yarn build:docker
-        - docker tag $DOCKER_USERNAME/blog-api:latest
-      script: 
-        - docker push $DOCKER_USERNAME/blog-api
-    - stage: deploy
+    - stage: build and deploy
       before_script:
         # install heroku CLI
         - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-        # login to docker registries (heroku)
+        # login to docker registries (dockerhub and heroku)
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+        # push to dockerhub
         - yarn build:docker
-        - docker tag registry.heroku.com/$HEROKU_APP/web
-      script:
+        - docker tag $DOCKER_USERNAME/blog-api:latest registry.heroku.com/$HEROKU_APP/web
+      script: 
+        - docker push $DOCKER_USERNAME/blog-api
         - docker push registry.heroku.com/$HEROKU_APP/web
         - heroku container:release web --app $HEROKU_APP
-
-
-
-
-# deploy:
-#   provider: script
-#   script: 
-#     # push to dockerhub & heroku
-#     # docker push $DOCKER_USERNAME/blog-api;
-#     docker push registry.heroku.com/$HEROKU_APP/web;
-#     heroku container:release web --app $HEROKU_APP
-#   on:
-#     branch: master
