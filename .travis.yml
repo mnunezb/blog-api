@@ -9,16 +9,16 @@ node_js:
 services:
   - docker
 
-before_install:
-  # install heroku CLI
-  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-  # login to docker registries (dockerhub + heroku)
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+# before_install:
+#   # install heroku CLI
+#   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+#   # login to docker registries (dockerhub + heroku)
+#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#   - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
 
-install:
-  # install deps
-  - yarn install
+# install:
+#   # install deps
+#   - yarn install
 
 # script:
   # - yarn linter
@@ -41,20 +41,30 @@ jobs:
   include:
     - stage: dependencies
       script:
-        yarn install
+        - yarn install
     - stage: test
       script:
-        yarn test
+        - yarn test
     - stage: build
+      before_script:
+        # login to docker registries (dockerhub)
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        # push to dockerhub
+        - yarn build:docker
+        - docker tag $DOCKER_USERNAME/blog-api:latest
       script: 
-      # push to dockerhub
-        yarn build:docker;
-        docker tag $DOCKER_USERNAME/blog-api:latest registry.heroku.com/$HEROKU_APP/web;
-        docker push $DOCKER_USERNAME/blog-api;
+        - docker push $DOCKER_USERNAME/blog-api
     - stage: deploy
+      before_script:
+        # install heroku CLI
+        - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+        # login to docker registries (heroku)
+        - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+        - yarn build:docker
+        - docker tag registry.heroku.com/$HEROKU_APP/web
       script:
-        docker push registry.heroku.com/$HEROKU_APP/web;
-        heroku container:release web --app $HEROKU_APP
+        - docker push registry.heroku.com/$HEROKU_APP/web
+        - heroku container:release web --app $HEROKU_APP
 
 
 
