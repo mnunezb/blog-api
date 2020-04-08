@@ -1,4 +1,4 @@
-FROM node:12.13.1-alpine as builder
+FROM node:12.16.1-alpine as builder
 
 # ARGS for node
 ARG NODE_ENV=production
@@ -17,7 +17,7 @@ RUN NODE_ENV=development npm i
 COPY src tsconfig*.json /usr/src/app/
 RUN npm run build && npm prune --production
 
-FROM node:12.13.1-alpine
+FROM node:12.16.1-alpine
 
 LABEL maintainer "Marcelo Núñez <marcelo1nunez@gmail.com>"
 
