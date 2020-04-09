@@ -1,10 +1,10 @@
-import { createConnection } from 'typeorm'
+import { createConnection, Connection } from 'typeorm'
 import 'dotenv/config'
 
 export const databaseProviders = [
   {
     provide: 'DATABASE_CONNECTION',
-    useFactory: async () =>
+    useFactory: async (): Promise<Connection> =>
       await createConnection({
         name: 'default',
         type: 'postgres',
