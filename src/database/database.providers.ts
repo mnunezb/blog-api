@@ -1,22 +1,26 @@
 import { createConnection, Connection } from 'typeorm'
-import 'dotenv/config'
+import { Provider } from '@nestjs/common'
+import { ApiConfigService } from '../common/config/api-config.service'
 
-export const databaseProviders = [
+export const databaseProviders: Provider[] = [
   {
     provide: 'DATABASE_CONNECTION',
-    useFactory: async (): Promise<Connection> =>
+    useFactory: async (
+      apiConfigService: ApiConfigService,
+    ): Promise<Connection> =>
       await createConnection({
         name: 'default',
         type: 'postgres',
-        host: process.env.DATABASE_HOST,
-        port: Number(process.env.DATABASE_PORT),
-        username: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_DB,
+        host: apiConfigService.databaseHost,
+        port: apiConfigService.databasePort,
+        username: apiConfigService.databaseUsername,
+        password: apiConfigService.databasePassword,
+        database: apiConfigService.databaseDB,
         synchronize: true,
         dropSchema: false,
         logging: true,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       }),
+    inject: [ApiConfigService],
   },
 ]
